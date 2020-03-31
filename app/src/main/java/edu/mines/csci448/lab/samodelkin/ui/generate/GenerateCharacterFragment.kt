@@ -21,6 +21,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import edu.mines.csci448.lab.samodelkin.R
 import edu.mines.csci448.lab.samodelkin.data.Character
+import edu.mines.csci448.lab.samodelkin.ui.MainActivity
 import edu.mines.csci448.lab.samodelkin.util.CharacterGenerator
 import edu.mines.csci448.lab.samodelkin.util.CharacterWorker
 import edu.mines.csci448.lab.samodelkin.util.NetworkConnectionUtil
@@ -147,10 +148,10 @@ class GenerateCharacterFragment : Fragment() {
         super.onResume()
         Log.d(logTag, "onResume() called")
         //Broken
-//        apiButton.isEnabled = isNetworkAvailableAndConnected(Activity())
-//        if(!isNetworkAvailableAndConnected(Activity())) {
-//            Toast.makeText(context, R.string.internet_reason, Toast.LENGTH_SHORT)
-//        }
+        apiButton.isEnabled = isNetworkAvailableAndConnected(MainActivity())
+        if(!isNetworkAvailableAndConnected()) {
+            Toast.makeText(context, R.string.internet_reason, Toast.LENGTH_SHORT)
+        }
     }
 
     override fun onPause() {

@@ -12,7 +12,6 @@ import kotlin.math.log
 private const val CHARACTER_DATA_API = "https://chargen-api.herokuapp.com/"
 private const val CHARACTER_API_KEY = "apiCharacterData"
 
-// TODO Step II.3
 class CharacterWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
     private val logTag = "448.CharWorker"
