@@ -7,19 +7,19 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.NavigationUI
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.mines.csci448.lab.samodelkin.R
 import edu.mines.csci448.lab.samodelkin.data.Character
+import edu.mines.csci448.lab.samodelkin.ui.detail.CharacterDetailFragmentArgs
 import java.util.*
 
 class CharacterListFragment : Fragment() {
-
-    interface Callbacks {
-        fun onCharacterSelected(characterId: UUID)
-    }
 
     private val logTag = "448.CharListFrag"
 
@@ -28,13 +28,9 @@ class CharacterListFragment : Fragment() {
     private lateinit var characterRecyclerView: RecyclerView
     private lateinit var adapter: CharacterListAdapter
 
-    private var callbacks: Callbacks? = null
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         Log.d(logTag, "onAttach() called")
-
-        callbacks = context as Callbacks?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +50,9 @@ class CharacterListFragment : Fragment() {
         characterRecyclerView.layoutManager = LinearLayoutManager(context)
 
         adapter = CharacterListAdapter(characterListViewModel) { character: Character -> Unit
-            // TODO launch CharacterDetailFragment
-            callbacks?.onCharacterSelected(character.id)
+            val action = CharacterListFragmentDirections
+                .actionCharacterListFragmentToCharacterDetailFragment(character.id)
+            findNavController().navigate(action)
         }
         characterRecyclerView.adapter = adapter
 
@@ -91,7 +88,9 @@ class CharacterListFragment : Fragment() {
         Log.d(logTag, "onOptionsItemSelected() called")
         return when (item.itemId) {
             R.id.new_character_menu_item -> {
-                // TODO launch GenerateCharacterFragment
+                val action = CharacterListFragmentDirections
+                    .actionCharacterListFragmentToGenerateCharacterFragment()
+                findNavController().navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -136,8 +135,6 @@ class CharacterListFragment : Fragment() {
     override fun onDetach() {
         Log.d(logTag, "onDetach() called")
         super.onDetach()
-
-        callbacks = null
     }
 
     private fun updateUI(characters: PagedList<Character>) {

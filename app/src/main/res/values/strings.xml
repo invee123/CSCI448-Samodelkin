@@ -2,7 +2,7 @@
     <string name="app_name">Samodelkin</string>
 
     <string name="new_character_label">New Character</string>
-    <string name="delete_character_label">Delte Charcter</string>
+    <string name="delete_character_label">Delete Character</string>
     <string name="confirm_delete">Confirm Delete?</string>
     <string name="confirm_delete_message">Are you sure you wish to delete this character?
 

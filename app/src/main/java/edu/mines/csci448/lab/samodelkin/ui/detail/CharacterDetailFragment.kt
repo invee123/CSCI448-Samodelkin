@@ -8,11 +8,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import edu.mines.csci448.lab.samodelkin.R
 import edu.mines.csci448.lab.samodelkin.data.Character
 import java.util.*
 
 private const val ARGS_CHARCTER_ID = "characterId"
+
 
 class CharacterDetailFragment : Fragment() {
 
@@ -28,6 +31,7 @@ class CharacterDetailFragment : Fragment() {
     }
 
     private val logTag = "448.CharDetailFrag"
+    private val args: CharacterDetailFragmentArgs by navArgs()
 
     private lateinit var characterData: Character
 
@@ -52,7 +56,7 @@ class CharacterDetailFragment : Fragment() {
         val factory = CharacterDetailViewModelFactory(requireActivity())
         characterDetailViewModel = ViewModelProvider(this, factory).get(CharacterDetailViewModel::class.java)
 
-        val characterId = arguments?.getSerializable(ARGS_CHARCTER_ID) as UUID
+        val characterId = args.characterId
         characterDetailViewModel.loadCharacter(characterId)
     }
 
@@ -100,7 +104,9 @@ class CharacterDetailFragment : Fragment() {
                     .setIcon(R.drawable.ic_menu_delete_character_light)
                     .setPositiveButton(android.R.string.yes ) { _, _ ->
                         characterDetailViewModel.deleteCharacter(characterData)
-                        // TODO return to CharacterListFragment
+                        val action = CharacterDetailFragmentDirections
+                            .actionCharacterDetailFragmentToCharacterListFragment2()
+                        findNavController().navigate(action)
                     }
                     .setNegativeButton(android.R.string.no, null)
                     .show()
