@@ -69,28 +69,6 @@ class GenerateCharacterFragment : Fragment() {
         generateCharacterViewModel = ViewModelProvider(this, factory).get(GenerateCharacterViewModel::class.java)
 
         workManager = WorkManager.getInstance(requireContext())
-
-        apiButton.setOnClickListener {
-            val workRequest = OneTimeWorkRequest
-                .Builder(CharacterWorker::class.java)
-                .build()
-            workManager.enqueue(workRequest)
-
-            workManager.getWorkInfoByIdLiveData(workRequest.id).observe(
-                viewLifecycleOwner,
-                androidx.lifecycle.Observer {workInfo ->
-                    when(workInfo.state) {
-                        WorkInfo.State.SUCCEEDED -> {
-                            val apiData = CharacterWorker.getApiData(workInfo.outputData)
-                            if (apiData != null) {
-                                characterData = CharacterGenerator.fromApiData(apiData)
-                                displayCharacterData()
-                            }
-                        }
-                    }
-                }
-            )
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -117,6 +95,28 @@ class GenerateCharacterFragment : Fragment() {
             val action = GenerateCharacterFragmentDirections
                 .actionGenerateCharacterFragmentToCharacterListFragment()
             findNavController().navigate(action)
+        }
+
+        apiButton.setOnClickListener {
+            val workRequest = OneTimeWorkRequest
+                .Builder(CharacterWorker::class.java)
+                .build()
+            workManager.enqueue(workRequest)
+
+            workManager.getWorkInfoByIdLiveData(workRequest.id).observe(
+                viewLifecycleOwner,
+                androidx.lifecycle.Observer {workInfo ->
+                    when(workInfo.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val apiData = CharacterWorker.getApiData(workInfo.outputData)
+                            if (apiData != null) {
+                                characterData = CharacterGenerator.fromApiData(apiData)
+                                displayCharacterData()
+                            }
+                        }
+                    }
+                }
+            )
         }
 
         return view
@@ -148,8 +148,8 @@ class GenerateCharacterFragment : Fragment() {
         super.onResume()
         Log.d(logTag, "onResume() called")
         //Broken
-        apiButton.isEnabled = isNetworkAvailableAndConnected(MainActivity())
-        if(!isNetworkAvailableAndConnected()) {
+        apiButton.isEnabled = isNetworkAvailableAndConnected(requireActivity())
+        if(!isNetworkAvailableAndConnected(requireActivity())) {
             Toast.makeText(context, R.string.internet_reason, Toast.LENGTH_SHORT)
         }
     }
